@@ -16,7 +16,7 @@ def get_element(ancestor, selector = None, attribute = None, return_list = False
         
         return ancestor.select_one(selector).text.strip()
     
-    except AttributeError:
+    except (AttributeError, TypeError):
         return None
     
 
@@ -36,11 +36,11 @@ selectors = {
     }
 
 
-# product_code = input("Podaj kod produktu: ")
-product_code = "96685108"
+product_code = "96693065"
 page_no = 1
 all_opinions = []
 url = f"https://www.ceneo.pl/{product_code}#tab=reviews"
+
 while(url):
     
     print(url)
@@ -59,8 +59,10 @@ while(url):
             single_opinion[key] = get_element(opinion, *value)
 
         all_opinions.append(single_opinion)
-    
-    url = f"https://www.ceneo.pl" + get_element(page_dom, "a.pagination__next", "href")
+    try:
+        url = f"https://www.ceneo.pl" + get_element(page_dom, "a.pagination__next", "href")
+    except TypeError:
+        url = None
 
 
 print(len(all_opinions))
